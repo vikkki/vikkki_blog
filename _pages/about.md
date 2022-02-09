@@ -4,6 +4,8 @@ title: About Me
 permalink: /about/
 ---
 
+
+Graduate student at the USC, Transnational Bioinformatics project, and a gardener
 This website is powered by **[fastpages](https://github.com/fastai/fastpages)** [^1].
 
 
