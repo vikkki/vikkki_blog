@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Run cellranger count on multiple samples interactively with python | Vikkki’s Notes</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Run cellranger count on multiple samples interactively with python" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="And collect summary pages/outs in a single folder" />
+<meta property="og:description" content="And collect summary pages/outs in a single folder" />
+<link rel="canonical" href="https://vikkki.github.io/vikkki_blog/python/jupyter/singlecell/cellranger/2021/09/12/Cellranger-count-python.html" />
+<meta property="og:url" content="https://vikkki.github.io/vikkki_blog/python/jupyter/singlecell/cellranger/2021/09/12/Cellranger-count-python.html" />
+<meta property="og:site_name" content="Vikkki’s Notes" />
+<meta property="og:image" content="https://vikkki.github.io/vikkki_blog/images/cellranger_count.png" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-09-12T00:00:00-05:00" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="twitter:image" content="https://vikkki.github.io/vikkki_blog/images/cellranger_count.png" />
+<meta property="twitter:title" content="Run cellranger count on multiple samples interactively with python" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2021-09-12T00:00:00-05:00","datePublished":"2021-09-12T00:00:00-05:00","description":"And collect summary pages/outs in a single folder","headline":"Run cellranger count on multiple samples interactively with python","image":"https://vikkki.github.io/vikkki_blog/images/cellranger_count.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://vikkki.github.io/vikkki_blog/python/jupyter/singlecell/cellranger/2021/09/12/Cellranger-count-python.html"},"url":"https://vikkki.github.io/vikkki_blog/python/jupyter/singlecell/cellranger/2021/09/12/Cellranger-count-python.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/vikkki_blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://vikkki.github.io/vikkki_blog/feed.xml" title="Vikkki's Notes" /><link rel="shortcut icon" type="image/x-icon" href="/vikkki_blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/vikkki_blog/">Vikkki&#39;s Notes</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/vikkki_blog/about/">About Me</a><a class="page-link" href="/vikkki_blog/search/">Search</a><a class="page-link" href="/vikkki_blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Run cellranger count on multiple samples interactively with python</h1><p class="page-description">And collect summary pages/outs in a single folder</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2021-09-12T00:00:00-05:00" itemprop="datePublished">
+        Sep 12, 2021
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      2 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/vikkki_blog/categories/#python">python</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/vikkki_blog/categories/#jupyter">jupyter</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/vikkki_blog/categories/#singlecell">singlecell</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/vikkki_blog/categories/#cellranger">cellranger</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-center">
+          <div class="px-2">
+
+    <a href="https://github.com/vikkki/vikkki_blog/tree/master/_notebooks/2021-09-12-Cellranger-count-python.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/vikkki_blog/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://mybinder.org/v2/gh/vikkki/vikkki_blog/master?filepath=_notebooks%2F2021-09-12-Cellranger-count-python.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/vikkki_blog/assets/badges/binder.svg" alt="Open In Binder"/>
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/vikkki/vikkki_blog/blob/master/_notebooks/2021-09-12-Cellranger-count-python.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/vikkki_blog/assets/badges/colab.svg" alt="Open In Colab"/>
+    </a>
+</div>
+          <div class="px-2">
+  <a href="https://deepnote.com/launch?url=https%3A%2F%2Fgithub.com%2Fvikkki%2Fvikkki_blog%2Fblob%2Fmaster%2F_notebooks%2F2021-09-12-Cellranger-count-python.ipynb" target="_blank">
+      <img class="notebook-badge-image" src="/vikkki_blog/assets/badges/deepnote.svg" alt="Launch in Deepnote"/>
+  </a>
+</div>
+
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2021-09-12-Cellranger-count-python.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This notebook includes several simple functions to help generate and run cellranger count commends, and gather the summary pages and output folder from seperate sample run directories.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span><span class="nn">shutil</span><span class="o">,</span><span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">config</span> ZMQInteractiveShell.ast_node_interactivity = &quot;all&quot;
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Check current work path:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">cfolder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+<span class="n">cfolder</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;/mnt/data_processing/10xRNA_working/20220202_Polverino_sc5prime_GEX_miseq&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_count_result_folder_list</span><span class="p">(</span><span class="n">cfolder</span><span class="p">):</span>
+    <span class="n">folders_list</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">cfolder</span><span class="p">,</span> <span class="n">followlinks</span> <span class="o">=</span> <span class="kc">False</span><span class="p">))[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">result_folder_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">folder</span> <span class="ow">in</span> <span class="n">folders_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">cfolder</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">folder</span> <span class="o">+</span> <span class="s2">&quot;/outs/web_summary.html&quot;</span><span class="p">):</span>
+            <span class="n">result_folder_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">folder</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result_folder_list</span>
+
+<span class="k">def</span> <span class="nf">get_sample_names</span><span class="p">(</span><span class="n">fastq_path</span><span class="p">):</span>
+    <span class="n">sample_names</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">fastq</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">fastq_path</span><span class="p">):</span>
+        <span class="n">sample_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;[_]&#39;</span><span class="p">,</span> <span class="n">fastq</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">sample_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">sample_names</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">sample_names</span>
+
+
+<span class="c1">### cellranger count commend construction:</span>
+<span class="k">def</span> <span class="nf">get_cellranger_count_cmd</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span><span class="n">fastq_path</span><span class="p">):</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">cellranger</span><span class="p">,</span> <span class="s2">&quot; count --transcriptome &quot;</span><span class="p">,</span> <span class="n">transcriptome</span><span class="p">,</span>
+                 <span class="s2">&quot; --fastqs &quot;</span><span class="p">,</span> <span class="n">fastq_path</span><span class="p">,</span> <span class="s2">&quot; --localcores=24 --localmem=100 --no-bam&quot;</span><span class="p">,</span>
+                  <span class="s2">&quot; --id &quot;</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="s2">&quot; --sample &quot;</span><span class="p">,</span> <span class="n">sample</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">cmd</span>
+
+<span class="c1">#  &quot; --expect-cells=5000&quot;</span>
+
+<span class="k">def</span> <span class="nf">run_cellranger_for_sample_list</span><span class="p">(</span><span class="n">sample_names</span><span class="p">,</span> <span class="n">fastq_path</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">sample_names</span><span class="p">:</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="n">get_cellranger_count_cmd</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span><span class="n">fastq_path</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-------------------------------</span><span class="se">\n</span><span class="s2">--------- Runing count---------</span><span class="se">\n</span><span class="s2">-------------------------------</span><span class="se">\n</span><span class="s2">&quot;</span> 
+              <span class="o">+</span> <span class="n">sample</span> <span class="o">+</span> <span class="s2">&quot;-------------------------------</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;------------------------------------------&quot;</span><span class="p">)</span>
+        <span class="n">res1</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">shell</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">stdout</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">res1</span><span class="o">.</span><span class="n">communicate</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">gather_summaries</span><span class="p">(</span><span class="n">cfolder</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cfolder</span> <span class="o">+</span> <span class="s2">&quot;/cellranger_web_summaries&quot;</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Creating folder...&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">cfolder</span> <span class="o">+</span> <span class="s2">&quot;/cellranger_web_summaries&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Folder created, Ready.&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Summary folder exists, Ready.&quot;</span><span class="p">)</span>
+    <span class="n">flist</span> <span class="o">=</span> <span class="n">get_count_result_folder_list</span><span class="p">(</span><span class="n">cfolder</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">folder</span> <span class="ow">in</span> <span class="n">flist</span><span class="p">:</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">cfolder</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">folder</span> <span class="o">+</span> <span class="s2">&quot;/outs/web_summary.html&quot;</span><span class="p">,</span> <span class="n">cfolder</span> <span class="o">+</span> <span class="s2">&quot;/cellranger_web_summaries/&quot;</span> <span class="o">+</span> <span class="n">folder</span> <span class="o">+</span> <span class="s2">&quot;_web_summary.html&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">folder</span> <span class="o">+</span> <span class="s2">&quot; Coppied.&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Finished.&quot;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Add the path to formated fastqs:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">fastq_path</span> <span class="o">=</span> <span class="s2">&quot;./fastq_checking/&quot;</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Setup ref genome and software version:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">transcriptome</span> <span class="o">=</span> <span class="s2">&quot;/data_1T/ref/hm/refdata-gex-GRCh38-2020-A&quot;</span>
+<span class="c1"># transcriptome = &quot;/data_1T/ref/mm/refdata-cellranger-mm10-3.0.0&quot;</span>
+<span class="c1"># transcriptome = &quot;/data_1T/ref/rn/Rnor_6.0&quot;</span>
+
+<span class="c1"># cellranger = &#39;/home/xiaofan/Biotools/cellranger-6.0.2/cellranger&#39;</span>
+<span class="c1"># cellranger = &#39;/home/xiaofan/Biotools/cellranger-6.1.1/cellranger&#39;</span>
+<span class="n">cellranger</span> <span class="o">=</span> <span class="s1">&#39;/home/xiaofan/Biotools/cellranger-6.1.2/cellranger&#39;</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Check sample names:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sample_names</span> <span class="o">=</span> <span class="n">get_sample_names</span><span class="p">(</span><span class="n">fastq_path</span><span class="p">)</span>
+<span class="n">sample_names</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[&#39;multiqc&#39;, &#39;69-20200902-cryo-lung-ssp-GEX&#39;]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Start cellrange count:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">run_cellranger_for_sample_list</span><span class="p">(</span><span class="n">sample_names</span><span class="p">,</span> <span class="n">fastq_path</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Collect-and-rename-summary-pages">Collect and rename summary pages<a class="anchor-link" href="#Collect-and-rename-summary-pages"> </a></h1>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">gather_summaries</span><span class="p">(</span><span class="n">cfolder</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Creating folder...
+Folder created, Ready.
+69-20200902-cryo-lung-ssp-GEX-manual Coppied.
+90-20210121-cryo-lung-susp-GEX Coppied.
+73-20200924-cryo-lung-susp-GEX Coppied.
+70-20200910-cryo-lung-susp-GEX Coppied.
+74-20201001-cryo-lung-susp-GEX Coppied.
+69-20200902-cryo-lung-ssp-GEX Coppied.
+78-20201112-cryo-lung-susp-GEX Coppied.
+UA94-RUL-cryo-lung-susp-20210311-GEX Coppied.
+72-20200917-cryo-lung-ssp-GEX Coppied.
+UA96-20210325-lung-cryo-GEX Coppied.
+Finished.
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">gather_count_output</span><span class="p">(</span><span class="n">cfolder</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cfolder</span> <span class="o">+</span> <span class="s2">&quot;/cellranger_count_output&quot;</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Creating folder...&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">cfolder</span> <span class="o">+</span> <span class="s2">&quot;/cellranger_count_output&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done.&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Output folder exists, Ready.&quot;</span><span class="p">)</span>
+    <span class="n">flist</span> <span class="o">=</span> <span class="n">get_count_result_folder_list</span><span class="p">(</span><span class="n">cfolder</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">folder</span> <span class="ow">in</span> <span class="n">flist</span><span class="p">:</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="n">cfolder</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">folder</span> <span class="o">+</span> <span class="s2">&quot;/outs&quot;</span><span class="p">,</span> <span class="n">cfolder</span> <span class="o">+</span> <span class="s2">&quot;/cellranger_count_output/&quot;</span> <span class="o">+</span> <span class="n">folder</span> <span class="o">+</span> <span class="s2">&quot;_out&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">folder</span> <span class="o">+</span> <span class="s2">&quot; Coppied.&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Finished.&quot;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If needed, collect the entire count output folder(can take up to minutes if bam files included)</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">gather_count_output</span><span class="p">(</span><span class="n">cfolder</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Creating folder...
+Done.
+S3 Coppied.
+S2 Coppied.
+M5 Coppied.
+P3 Coppied.
+M3 Coppied.
+M6 Coppied.
+S1 Coppied.
+P1 Coppied.
+M4 Coppied.
+M1 Coppied.
+PA Coppied.
+P5 Coppied.
+P2 Coppied.
+M2 Coppied.
+Finished.
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><a class="u-url" href="/vikkki_blog/python/jupyter/singlecell/cellranger/2021/09/12/Cellranger-count-python.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/vikkki_blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/vikkki_blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/vikkki_blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>Fragments and ideas about NGS analysis and related topics.</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/vikkki" target="_blank" title="vikkki"><svg class="svg-icon grey"><use xlink:href="/vikkki_blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/vikkki_blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
