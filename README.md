@@ -6,7 +6,7 @@
 
 https://vikkki.github.io/vikkki_blog/
 
-# My Blog
+# Vikkki's notes
 
 
 _powered by [fastpages](https://github.com/fastai/fastpages)_
