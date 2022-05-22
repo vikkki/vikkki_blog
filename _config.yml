@@ -6,7 +6,7 @@
 # https://learn-the-web.algonquindesign.ca/topics/markdown-yaml-cheat-sheet/#yaml
 # https://learnxinyminutes.com/docs/yaml/
 
-title: Vikkki's Notes
+title: Vikkki's NGS Notes
 description: Fragments and ideas about NGS analysis and related topics.
 github_username: vikkki
 # you can comment the below line out if your repo name is not different than your baseurl
@@ -124,3 +124,5 @@ feed:
   
 exclude:
   - settings.ini
+
+imageurl: https://vikkki.github.io/vikkki_blog/images>
