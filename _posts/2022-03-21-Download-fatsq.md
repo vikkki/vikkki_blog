@@ -1,4 +1,15 @@
 ---
+title: "GitHub Actions: Providing Data Scientists With New Superpowers"
+description: A Tutorial on GitHub <a href="https://github.com/features/actions">Actions</a> For Data Scientists
+toc: true
+comments: true
+layout: post
+categories: [actions, markdown]
+image: images/fastpages_posts/actions/actions_logo.png
+author: Hamel Husain & Jeremy Howard
+---
+
+---
 toc:true
 branch: master
 badges: true
