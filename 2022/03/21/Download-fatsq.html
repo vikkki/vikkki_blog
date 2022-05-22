@@ -1,0 +1,81 @@
+<h1 id="ways-to-download-fastq-files-of-a-geo-dataset">Ways to download fastq files of a GEO dataset</h1>
+<blockquote>
+  <p>Derecrly download(?) using prefetch or, Aspera</p>
+</blockquote>
+
+<ul>
+  <li>toc:true- branch: master</li>
+  <li>badges: true</li>
+  <li>comments: false</li>
+  <li>author: Vikkki</li>
+  <li>categories: [fastq, GEO, downloading,prefetch, Aspera]</li>
+  <li>image: images/info.png</li>
+  <li>hide: false</li>
+</ul>
+
+<h2 id="download-from-ncbi">Download from NCBI</h2>
+<h3 id="on-the-page-of-target-dataset-here-im-trying-to-retrieve-data-from-geo-series-series-gse173771-here">On the page of target dataset, here I’m trying to retrieve data from GEO Series Series GSE173771 <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE173771">here</a>:</h3>
+
+<p><img src="image/sra.png" alt="" /></p>
+
+<p>Below Supplementary fild section, click the link of “SRA Run Selector” to obtain <strong>accession list</strong>:</p>
+
+<p><img src="image/acclist.png" alt="" /></p>
+
+<h3 id="prefetch">Prefetch</h3>
+
+<p>“Prefetch is a part of the SRA toolkit. This program downloads Runs (sequence files in the compressed SRA format) and all additional data necessary to convert the Run from the SRA format to a more commonly used format. Prefetch can be used to correct and finish an incomplete Run download.”</p>
+
+<p>For more info on prefetch and sra download, you can also refer to <a href="https://www.ncbi.nlm.nih.gov/sra/docs/sradownload/">this page</a>.</p>
+
+<p>To install SRA toolkit of your system: https://github.com/ncbi/sra-tools/wiki/</p>
+
+<p>After setting up the toolkit, entire target folder:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> ./data_path_to_download_into/
+
+<span class="c"># make command list:</span>
+
+<span class="nb">cat</span> ../SRR_Acc_List.txt | <span class="k">while </span><span class="nb">read id
+</span><span class="k">do
+</span><span class="nb">echo </span>prefetch <span class="k">${</span><span class="nv">id</span><span class="k">}</span> <span class="nt">-O</span> ./
+<span class="k">done</span> <span class="o">&gt;</span> prefetch.command
+
+<span class="c"># take a look</span>
+<span class="nb">cat </span>prefetch.command
+
+<span class="c"># run downloading</span>
+<span class="nb">nohup </span>bash prefetch.command &amp;
+</code></pre></div></div>
+
+<h3 id="format-convert">Format convert</h3>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">mkdir </span>fastq
+
+<span class="nb">cd </span>fastq
+<span class="nb">ln</span> <span class="nt">-s</span> ~/path/to/1.sra_data/<span class="k">*</span> ./fastq/
+
+<span class="nb">cat</span> ../SRR_Acc_List.txt | <span class="k">while </span><span class="nb">read id
+</span><span class="k">do</span>
+<span class="c"># fasterq-dump is also part of src-toolkit</span>
+<span class="nb">echo</span> <span class="s2">"fasterq-dump -e 32 --split-files -O ./ --outfile </span><span class="k">${</span><span class="nv">id</span><span class="k">}</span><span class="s2">.fastq ../sra/</span><span class="k">${</span><span class="nv">id</span><span class="k">}</span><span class="s2">.sra"</span>    
+<span class="nb">echo</span> <span class="s2">"pigz -p 16 -f ./</span><span class="k">${</span><span class="nv">id</span><span class="k">}</span><span class="s2">_1.fastq"</span>
+<span class="nb">echo</span> <span class="s2">"pigz -p 16 -f ./</span><span class="k">${</span><span class="nv">id</span><span class="k">}</span><span class="s2">_2.fastq"</span>
+<span class="k">done</span> <span class="o">&gt;</span> sra2fq.sh
+
+<span class="nb">cat </span>sra2fq.sh
+<span class="nb">nohup </span>bash sra2fq.sh &amp;
+</code></pre></div></div>
+
+<h2 id="or-it-could-be-another-option-to-download-data-fastq-from-embl-ebi">Or, it could be another option to download data (fastq) from EMBL-EBI:</h2>
+
+<h3 id="generate-download-path">Generate download path:</h3>
+<p>On ENA homepage: 
+https://www.ebi.ac.uk/ena/browser/home search for GSE173771:</p>
+
+<p>https://www.ebi.ac.uk/ena/browser/view/PRJNA726999?show=reads</p>
+
+<p>We can download fastq files directly, or with Aspera, use command line to download them.</p>
+
+<p><img src="image/ebi.png" alt="" /></p>
+
+<p>Created at 03/21/2022, editted at 5/10/2022 by vikkki 🌲</p>
