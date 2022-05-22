@@ -10,8 +10,6 @@ image: images/info.png
 badges: true
 ---
 
-# Ways to download fastq files of a GEO dataset
-
 ## Download from NCBI
 ### On the page of target dataset, here I'm trying to retrieve data from GEO Series Series GSE173771 [here](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE173771): 
 
@@ -69,9 +67,9 @@ nohup bash sra2fq.sh &
 ```
 
 
-## Or, it could be another option to download data (fastq) from EMBL-EBI:
+## Or, it could be another option to download data (fastq) from EMBL-EBI
 
-### Generate download path:
+### Generate download path
 On ENA homepage: 
 https://www.ebi.ac.uk/ena/browser/home search for GSE173771:
 
