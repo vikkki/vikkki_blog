@@ -16,6 +16,7 @@ badges: true
 ### On the page of target dataset, here I'm trying to retrieve data from GEO Series Series GSE173771 [here](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE173771): 
 
 ![](https://github.com/vikkki/vikkki_blog/blob/master/images/sra.png)
+![]({{ site.imageurl }}/sra.png)
 
 ![](https://www.fast.ai/images/fastai_paper/show_batch.png "Credit: https://www.fast.ai/2020/02/13/fastai-A-Layered-API-for-Deep-Learning/")
 
