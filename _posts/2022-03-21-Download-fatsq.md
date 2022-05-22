@@ -17,6 +17,8 @@ badges: true
 
 ![](https://github.com/vikkki/vikkki_blog/blob/master/images/sra.png)
 
+![](https://www.fast.ai/images/fastai_paper/show_batch.png "Credit: https://www.fast.ai/2020/02/13/fastai-A-Layered-API-for-Deep-Learning/")
+
 Below Supplementary fild section, click the link of "SRA Run Selector" to obtain **accession list**:
 
 ![](image/acclist.png)
