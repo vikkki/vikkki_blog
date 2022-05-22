@@ -1,14 +1,17 @@
+---
+toc:true
+branch: master
+badges: true
+comments: false
+author: Vikkki
+categories: [fastq, GEO, downloading, prefetch]
+image: images/info.png
+hide: false
+layout: post
+description: Derecrly download(?) using prefetch or from EBI
+title: Ways to download fastq files of a GEO dataset
+---
 # Ways to download fastq files of a GEO dataset
-> Derecrly download(?) using prefetch or, Aspera
-
-- toc:true- branch: master
-- badges: true
-- comments: false
-- author: Vikkki
-- categories: [fastq, GEO, downloading,prefetch, Aspera]
-- image: images/info.png
-- hide: false
-
 
 ## Download from NCBI
 ### On the page of target dataset, here I'm trying to retrieve data from GEO Series Series GSE173771 [here](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE173771): 
