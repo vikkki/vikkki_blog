@@ -19,13 +19,21 @@ url1
 
 ![](https://github.com/vikkki/vikkki_blog/blob/master/images/sra.png)
 
-url
+url2
 
 ![](https://github.com/vikkki/vikkki_blog/images/sra.png)
 
-link
+url3(site base)
+
+![]({{site.baseurl}}/images/info.png "Lets go up!")
+
+link4(imgeurl)
 
 ![]({{ site.imageurl }}/sra.png)
+
+url5(raw)
+
+![](https://raw.githubusercontent.com/vikkki/vikkki_blog/master/images/sra.png)
 
 postest 
 
