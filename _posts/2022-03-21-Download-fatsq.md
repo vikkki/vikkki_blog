@@ -11,7 +11,7 @@ badges: true
 ---
 
 ## Download from NCBI
-### On the page of target dataset, here I'm trying to retrieve data from GEO Series Series GSE173771 [here](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE173771): 
+### On the page of target dataset, here I'm trying to retrieve data from GEO Series Series GSE173771 [here](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE173771)
 
 ![]({{site.baseurl}}/images/sra.png "SRA selector")
 
